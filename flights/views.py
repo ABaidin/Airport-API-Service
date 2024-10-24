@@ -1,5 +1,6 @@
-from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import viewsets, filters
+
 from flights.models import (
     Airplane,
     AirplaneType,
@@ -48,7 +49,9 @@ class RouteViewSet(viewsets.ModelViewSet):
 
 
 class FlightViewSet(viewsets.ModelViewSet):
-    queryset = Flight.objects.all()
+    queryset = Flight.objects.select_related("route", "airplane").prefetch_related(
+        "crew"
+    )
     serializer_class = FlightSerializer
     filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
     filterset_fields = ("route", "airplane")
@@ -56,7 +59,7 @@ class FlightViewSet(viewsets.ModelViewSet):
 
 
 class OrderViewSet(viewsets.ModelViewSet):
-    queryset = Order.objects.all()
+    queryset = Order.objects.select_related("flight__airplane", "order__user")
     serializer_class = OrderSerializer
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ["user"]
@@ -64,8 +67,11 @@ class OrderViewSet(viewsets.ModelViewSet):
 
 
 class TicketViewSet(viewsets.ModelViewSet):
-    queryset = Ticket.objects.all()
+    queryset = Ticket.objects.select_related("user")
     serializer_class = TicketSerializer
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ["flight", "order"]
     ordering_fields = ["row", "seat"]
+
+    def perform_create(self, serializer):
+        serializer.save(order=Order.objects.create(user=self.request.user))

@@ -1,0 +1,54 @@
+[
+    {
+        "model": "flights.airport",
+        "pk": 1,
+        "fields": {
+            "name": "JFK",
+            "closest_big_city": "New York"
+        }
+    },
+    {
+        "model": "flights.airport",
+        "pk": 2,
+        "fields": {
+            "name": "LAX",
+            "closest_big_city": "Los Angeles"
+        }
+    },
+    {
+        "model": "flights.airplanetype",
+        "pk": 1,
+        "fields": {
+            "name": "Boeing"
+        }
+    },
+    {
+        "model": "flights.airplane",
+        "pk": 1,
+        "fields": {
+            "name": "Boeing 777",
+            "rows": 30,
+            "seats_in_row": 6,
+            "airplane_type": 1
+        }
+    },
+    {
+        "model": "flights.route",
+        "pk": 1,
+        "fields": {
+            "source": 1,
+            "destination": 2,
+            "distance": 3000
+        }
+    },
+    {
+        "model": "flights.flight",
+        "pk": 1,
+        "fields": {
+            "route": 1,
+            "airplane": 1,
+            "departure_time": "2024-10-20T10:00:00Z",
+            "arrival_time": "2024-10-20T14:00:00Z"
+        }
+    }
+]
